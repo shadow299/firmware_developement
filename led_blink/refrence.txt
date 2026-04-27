@@ -1,0 +1,8 @@
+Flash start address :- 0x07ffffff
+
+Boot from main Flash memory: the main Flash memory is aliased in the boot memory
+space (0x0000 0000), but still accessible from its original memory space (0x800 0000).
+In other words, the Flash memory contents can be accessed starting from address
+0x0000 0000 or 0x800 0000
+
+pin 13 -> bit 13
