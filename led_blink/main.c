@@ -7,7 +7,7 @@
 
 void led_init(void){
   //enable clock for gpioc bit 4
-  RCC_APB2ENR |= ( 1 << 4 );
+  RCC_ABP2ENR |= ( 1 << 4 );
 
   //configure pc13 as output CRH register
   GPIOC_CRH &= (0xf << 20); //clear config

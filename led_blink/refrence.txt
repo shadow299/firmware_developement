@@ -6,3 +6,34 @@ In other words, the Flash memory contents can be accessed starting from address
 0x0000 0000 or 0x800 0000
 
 pin 13 -> bit 13
+
+stm32flash -w blink.bin -v -g 0x08000000 /dev/ttyUSB0
+wrong baud (try -b 115200)
+
+//erase full chip
+stm32flash -o /dev/ttyUSB0
+
+//read chip
+stm32flash -r dump.bin /dev/ttyUSB0
+
+//read device info
+stm32flash /dev/ttyUSB0
+
+
+# erase
+stm32flash -o /dev/ttyUSB0
+
+# read full flash
+stm32flash -r dump.bin /dev/ttyUSB0
+
+# read specific size
+stm32flash -r dump.bin -S 0x08000000:0x10000 /dev/ttyUSB0
+
+# write
+stm32flash -w blink.bin /dev/ttyUSB0
+
+# write + verify
+stm32flash -v -w blink.bin /dev/ttyUSB0
+
+# device info
+stm32flash /dev/ttyUSB0
