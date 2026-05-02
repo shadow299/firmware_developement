@@ -11,5 +11,5 @@
 #define RCC_ABP2ENR (*(volatile uint32_t *)(0x40021018))
 #define GPIOC_CRH   (*(volatile uint32_t *)(0x40011000 + 0x04))
 
-#define LED_PIN 13
+#define LED_PIN 15
 #define CYCLES_PER_MS 8000

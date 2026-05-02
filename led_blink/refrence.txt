@@ -37,3 +37,55 @@ stm32flash -v -w blink.bin /dev/ttyUSB0
 
 # device info
 stm32flash /dev/ttyUSB0
+
+
+pins:
+For CRH:
+
+shift = (pin - 8) × 4
+
+For PC15:
+
+(15 - 8) × 4 = 7 × 4 = 28
+✅ Fix
+GPIOC_CRH &= ~(0xF << 28);  // clear PC15
+GPIOC_CRH |=  (0x2 << 28);  // output push-pull
+
+takeaway
+CRH shift = (pin - 8) × 4
+clear = &= ~mask
+set   = |= mask
+
+
+Golden rule (remember this)
+To clear bits → use &= ~mask
+To set bits   → use |= mask
+🔥 One-line intuition
+
+& mask = keep only these bits
+& ~mask = clear only these bits
+
+🚀 Quick sanity check trick
+
+Whenever you write:
+
+&=
+
+👉 Ask yourself:
+
+“Am I keeping bits… or clearing bits?”
+
+If clearing → you MUST use ~
+
+💡 Bonus tip (helps avoid mistakes)
+
+Write it like this:
+
+uint32_t mask = 0xF << 20;
+GPIOC_CRH &= ~mask;
+
+👉 much harder to mess up
+
+🧠 Final takeaway
+Missing ~ = register destruction
+Using ~   = precise control
