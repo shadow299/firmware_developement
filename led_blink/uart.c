@@ -23,6 +23,7 @@ void usart1_init(void)
     // enable USART1, transmitter and receiver
     USART_CR1 |= (1 << USART1_UE_BIT); // USART enable
     USART_CR1 |= (1 << USART1_TE_BIT); // Transmitter enable
+    USART_CR1 |= (1 << 2);             // Receiver enable (RE bit)
 }
 
 void usart1_send_char(char c)
@@ -38,4 +39,32 @@ void usart1_send_string(const char *str)
     {
         usart1_send_char(*str++);
     }
+}
+
+char usart1_receive_char(void)
+{
+    while (!(USART_SR & (1 << 5)))
+        ; // wait until data received
+    return USART_DR;
+}
+
+void usart1_receive_string(char *buffer, int max_len)
+{
+    int i = 0;
+    char c;
+
+    while (i < max_len - 1)
+    {
+        c = usart1_receive_char();
+
+        // echo back (optional but useful)
+        usart1_send_char(c);
+
+        if (c == '\r' || c == '\n')
+            break;
+
+        buffer[i++] = c;
+    }
+
+    buffer[i] = '\0'; // null terminate
 }

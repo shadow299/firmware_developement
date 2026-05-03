@@ -37,3 +37,5 @@ enable clock RCC
 void usart1_init(void);
 void usart1_send_char(char c);
 void usart1_send_string(const char *str);
+char usart1_receive_char(void);
+void usart1_receive_string(char *buffer, int max_len);
