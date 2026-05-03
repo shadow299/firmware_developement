@@ -1,5 +1,5 @@
 # Project name
-TARGET = blink
+TARGET = uart_blink
 
 # Toolchain
 CC = arm-none-eabi-gcc
@@ -10,7 +10,7 @@ CFLAGS = -mcpu=cortex-m3 -mthumb -O0 -Wall -nostdlib -ffreestanding
 LDFLAGS = -T linker.ld
 
 # Source files
-SRCS = main.c startup.c
+SRCS = main.c startup.c uart.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)
