@@ -1,10 +1,24 @@
 #include "main.h"
 #include "uart.h"
 
+char cmd[20];
+
 //
 // ODR bit 0 -> LED ON
 // ODR bit 1 -> Led OFF
 //
+
+int str_equal(const char *a, const char *b)
+{
+  while (*a && *b)
+  {
+    if (*a != *b)
+      return 0;
+    a++;
+    b++;
+  }
+  return (*a == '\0' && *b == '\0');
+}
 
 void led_init(void)
 {
@@ -17,41 +31,31 @@ void led_init(void)
   GPIOC_ODR |= (1 << LED_PIN); // set initial state low (led off -> active low)
 }
 
-void delay_ms(int milliseconds)
-{
-  volatile long cycles = milliseconds * CYCLES_PER_MS;
-
-  while (cycles--)
-    ;
-}
-
-void led_toggle(void)
-{
-  if (GPIOC_ODR & (1 << LED_PIN))
-  {
-    GPIOC_ODR &= ~(1 << LED_PIN);     // turn on the led (active low)
-    usart1_send_string("LED ON\r\n"); // send '1' via USART1
-  }
-  else
-  {
-    GPIOC_ODR |= (1 << LED_PIN);       // turn off the led
-    usart1_send_string("LED OFF\r\n"); // send '0' via USART1
-  }
-}
-
 int main(void)
 {
-  // configure the green led pin
-  usart1_init();
   led_init();
+  usart1_init();
 
   while (1)
   {
-    // change the status of green led
-    led_toggle();
+    usart1_send_string("\r\nEnter command: ");
 
-    // pause for 500 ms
-    delay_ms(100);
+    usart1_receive_string(cmd, sizeof(cmd));
+
+    if (str_equal(cmd, "on"))
+    {
+      GPIOC_ODR |= (1 << LED_PIN);
+      usart1_send_string("\r\nLED ON\r\n");
+    }
+    else if (str_equal(cmd, "off"))
+    {
+      GPIOC_ODR &= ~(1 << LED_PIN); // active low
+
+      usart1_send_string("\r\nLED OFF\r\n");
+    }
+    else
+    {
+      usart1_send_string("\r\nUnknown command\r\n");
+    }
   }
-  return 0;
 }
