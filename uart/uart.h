@@ -25,8 +25,8 @@ enable clock RCC
 #define USART_BRR (*(volatile uint32_t *)(USART1_BASE + 0x08))
 #define USART_CR1 (*(volatile uint32_t *)(USART1_BASE + 0x0C))
 
-#define GPIO_BASE 0x40010800
-#define GPIOA_CRH (*(volatile uint32_t *)(GPIO_BASE + 0x04))
+#define USRT_GPIO_BASE 0x40010800
+#define UART_GPIOA_CRH (*(volatile uint32_t *)(USRT_GPIO_BASE + 0x04))
 
 #define USART1_EN_BIT 14
 #define GPIOA_EN_BIT 2
