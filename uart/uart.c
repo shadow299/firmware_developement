@@ -9,13 +9,13 @@ void usart1_init(void)
     // enable gpio pins for usart1 (PA9 -> TX, PA10 -> RX)
     // configure PA9 as alternate function push-pull (AF_PP) for TX
     // configure PA10 as input floating for RX
-    // GPIOA_CRH register controls pins 8-15
-    GPIOA_CRH &= ~(0xF << 4); // clear config for PA9
-    GPIOA_CRH |= (0xB << 4);  // set PA9 to alternate function push-pull
+    // UART_GPIOA_CRH register controls pins 8-15
+    UART_GPIOA_CRH &= ~(0xF << 4); // clear config for PA9
+    UART_GPIOA_CRH |= (0xB << 4);  // set PA9 to alternate function push-pull
 
     // configure PA10 as input floating
-    GPIOA_CRH &= ~(0xF << 8); // clear config for PA10
-    GPIOA_CRH |= (0x4 << 8);  // set PA10 to input floating
+    UART_GPIOA_CRH &= ~(0xF << 8); // clear config for PA10
+    UART_GPIOA_CRH |= (0x4 << 8);  // set PA10 to input floating
 
     // set baud rate to 9600 bps
     USART_BRR = 0x341;

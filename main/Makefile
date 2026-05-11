@@ -1,5 +1,5 @@
 # Project name
-TARGET = uart_blink
+TARGET = red_green
 
 # Toolchain
 CC = arm-none-eabi-gcc
@@ -10,7 +10,7 @@ CFLAGS = -mcpu=cortex-m3 -mthumb -O0 -Wall -nostdlib -ffreestanding
 LDFLAGS = -T linker.ld
 
 # Source files
-SRCS = main.c startup.c uart.c
+SRCS = main.c startup.c ../gpio/gpio.c ../uart/uart.c ../core/core.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)
@@ -33,3 +33,4 @@ $(TARGET).bin: $(TARGET).elf
 # Clean
 clean:
 	rm -f *.o *.elf *.bin
+	rm -f ../gpio/*.o ../uart/*.o ../core/*.o

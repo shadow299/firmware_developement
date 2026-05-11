@@ -51,6 +51,10 @@ For PC15:
 GPIOC_CRH &= ~(0xF << 28);  // clear PC15
 GPIOC_CRH |=  (0x2 << 28);  // output push-pull
 
+For CRL:
+
+shift = pin * 4
+
 takeaway
 CRH shift = (pin - 8) × 4
 clear = &= ~mask
