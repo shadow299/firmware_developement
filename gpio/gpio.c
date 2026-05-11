@@ -1,27 +1,47 @@
-#include "../uart/uart.h"
 #include "gpio.h"
 
 uint8_t get_binary_value(uint8_t mode)
 {
-    if (mode == GPIO_MODE_INPUT)
+    switch (mode)
     {
-        return 0b0000; // input mode
-    }
-    else if (mode == GPIO_MODE_OUTPUT_10MHz)
-    {
-        return 0b0001; // output mode, max speed 10 MHz
-    }
-    else if (mode == GPIO_MODE_OUTPUT_2MHz)
-    {
-        return 0b0010;
-    }
-    else if (mode == GPIO_MODE_OUTPUT_50MHz)
-    {
-        return 0b0011; // output mode, max speed 50 MHz
-    }
-    else
-    {
-        return 0b0000; // default to input mode if invalid mode is provided
+    // ---------- INPUT ----------
+    case GPIO_MODE_INPUT:
+        return 0x4; // Floating input
+        // CNF=01 MODE=00 → 0100
+
+    // ---------- GENERAL OUTPUT PUSH-PULL ----------
+    case GPIO_MODE_OUTPUT_10MHz:
+        return 0x1; // GP Push-Pull 10MHz
+        // CNF=00 MODE=01 → 0001
+
+    case GPIO_MODE_OUTPUT_2MHz:
+        return 0x2; // GP Push-Pull 2MHz
+        // CNF=00 MODE=10 → 0010
+
+    case GPIO_MODE_OUTPUT_50MHz:
+        return 0x3; // GP Push-Pull 50MHz
+        // CNF=00 MODE=11 → 0011
+
+    // ---------- GENERAL OUTPUT ----------
+    case GPIO_MODE_OUTPUT_PUSHPULL:
+        return 0x2; // GP Push-Pull 2MHz
+        // CNF=00 MODE=10 → 0010
+
+    case GPIO_MODE_OUTPUT_OPENDRAIN:
+        return 0x6; // GP Open-Drain 2MHz
+        // CNF=01 MODE=10 → 0110
+
+    // ---------- ALTERNATE FUNCTION ----------
+    case GPIO_MODE_AF_PUSHPULL:
+        return 0xB; // AF Push-Pull 50MHz
+        // CNF=10 MODE=11 → 1011
+
+    case GPIO_MODE_AF_OPENDRAIN:
+        return 0xF; // AF Open-Drain 50MHz
+        // CNF=11 MODE=11 → 1111
+
+    default:
+        return 0x4; // Safe default = floating input
     }
 }
 

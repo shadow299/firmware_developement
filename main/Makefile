@@ -1,5 +1,5 @@
 # Project name
-TARGET = red_green
+TARGET = BMP280
 
 # Toolchain
 CC = arm-none-eabi-gcc
@@ -10,7 +10,7 @@ CFLAGS = -mcpu=cortex-m3 -mthumb -O0 -Wall -nostdlib -ffreestanding
 LDFLAGS = -T linker.ld
 
 # Source files
-SRCS = main.c startup.c ../gpio/gpio.c ../uart/uart.c ../core/core.c
+SRCS = main.c startup.c ../gpio/gpio.c ../uart/uart.c ../core/core.c ../spi/spi.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)
@@ -33,4 +33,4 @@ $(TARGET).bin: $(TARGET).elf
 # Clean
 clean:
 	rm -f *.o *.elf *.bin
-	rm -f ../gpio/*.o ../uart/*.o ../core/*.o
+	rm -f ../gpio/*.o ../uart/*.o ../core/*.o ../spi/*.o
