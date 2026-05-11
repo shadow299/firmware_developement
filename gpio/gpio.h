@@ -35,10 +35,14 @@
 #define GPIOC_IDR (*(volatile uint32_t *)(GPIOC_BASE + GPIOx_IDR))
 #define GPIOC_ODR (*(volatile uint32_t *)(GPIOC_BASE + GPIOx_ODR))
 
-#define GPIO_MODE_INPUT 0x0
-#define GPIO_MODE_OUTPUT_10MHz 0x1
-#define GPIO_MODE_OUTPUT_2MHz 0x2
-#define GPIO_MODE_OUTPUT_50MHz 0x3
+#define GPIO_MODE_INPUT 0
+#define GPIO_MODE_OUTPUT_10MHz 1
+#define GPIO_MODE_OUTPUT_2MHz 2
+#define GPIO_MODE_OUTPUT_50MHz 3
+#define GPIO_MODE_OUTPUT_PUSHPULL 4
+#define GPIO_MODE_OUTPUT_OPENDRAIN 5
+#define GPIO_MODE_AF_PUSHPULL 6
+#define GPIO_MODE_AF_OPENDRAIN 7
 
 void gpio_init(uint32_t pin, char section, uint8_t mode);
 void gpio_toggle_pin(uint32_t pin, uint8_t state, char section);

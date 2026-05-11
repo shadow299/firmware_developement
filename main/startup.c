@@ -10,11 +10,12 @@ void Reset_Handler(void);
 // vector table
 __attribute__((section(".isr_vector")))
 uint32_t vector_table[] = {
-	(uint32_t)&_stack_top,  // initial stack pointer
-	(uint32_t)Reset_Handler
-};
+	(uint32_t)&_stack_top, // initial stack pointer
+	(uint32_t)Reset_Handler};
 
-void Reset_Handler(void) {
+void Reset_Handler(void)
+{
 	main();
-	while (1);
+	while (1)
+		;
 }
