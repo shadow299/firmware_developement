@@ -33,12 +33,12 @@ void bmp280_read_calib(void)
 void bmp280_detect_device(void)
 {
   uint8_t id;
-  gpio_toggle_pin(4, 0, 'A'); // CS LOW
+  gpio_toggle_pin(BMP280_CS_PIN, 0, 'A'); // CS LOW
 
   spi_transfer(0xD0);      // send register address
   id = spi_transfer(0x00); // read response
 
-  gpio_toggle_pin(4, 1, 'A'); // CS HIGH
+  gpio_toggle_pin(BMP280_CS_PIN, 1, 'A'); // CS HIGH
 
   if (id == 0x58)
   {
