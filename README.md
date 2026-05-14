@@ -1,4 +1,4 @@
-# STM32 Sensor Firmware
+# STM32 MCU Firmware
 
 Bare-metal firmware for an STM32F103 "Blue Pill" board that communicates with SPI sensors and prints data over USART.
 
@@ -36,11 +36,6 @@ Build from the `main` directory:
 cd /home/lemon/code/c-codes/firmware_developement/main
 make
 ```
-
-This produces:
-
-- `BMP280.elf`
-- `BMP280.bin`
 
 ## Project Structure
 
