@@ -37,3 +37,7 @@ void spi_init(void);
 uint8_t spi_transfer(uint8_t data);
 void spi_send(uint8_t data);
 uint8_t spi_receive(void);
+
+// BMP280 specific functions
+uint8_t bmp280_read_register(uint8_t reg);
+void bmp280_write_register(uint8_t reg, uint8_t value);

@@ -53,3 +53,29 @@ uint8_t spi_receive(void)
 {
     return spi_transfer(0x00);
 }
+
+// BMP280 specific functions
+uint8_t bmp280_read_register(uint8_t reg)
+{
+    uint8_t data;
+    gpio_toggle_pin(4, 0, 'A'); // cs low
+    spi_send(reg | 0x80);
+    data = spi_receive();
+    gpio_toggle_pin(4, 1, 'A'); // cs pin high
+    return data;
+}
+
+void bmp280_write_register(uint8_t reg, uint8_t value)
+{
+    // set chip select high
+    gpio_toggle_pin(4, 0, 'A');
+
+    // set register for write
+    spi_send(reg & 0x7F); // set 7th bit 0 to enable write 0x7F = 01111111
+
+    // send value
+    spi_send(value);
+
+    // set cs high
+    gpio_toggle_pin(4, 1, 'A');
+}
