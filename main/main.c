@@ -3,6 +3,7 @@
 #include "main.h"
 #include "../spi/spi.h"
 #include "../gpio/gpio.h"
+#include "../rc522/rc522.h"
 
 //
 // ODR bit 0 -> LED ON
@@ -102,20 +103,249 @@ void bmp280_show_temp(void)
       temperature % 100);
 }
 
+/*
 int main(void)
 {
+  uint8_t previous_state = 0;
+
   usart1_init();
-  spi_init();
+  rc522_init();
 
-  usart1_send_string("\r\nSTART\r\n");
+  uart_printf("START\r\n");
 
-  bmp280_write_register(0xF4, 0x27);
-  delay_ms(100);
-  bmp280_read_calib();
+  // led operation test
+  gpio_init(0, 'A', GPIO_MODE_OUTPUT_PUSHPULL); // RED LED
+  gpio_init(1, 'A', GPIO_MODE_OUTPUT_PUSHPULL); // green led
+
+  // red led on bydefault
+  gpio_toggle_pin(0, 1, 'A'); // red led on
+  gpio_toggle_pin(1, 0, 'A'); // green led off
 
   while (1)
   {
-    bmp280_show_temp();
-    delay_ms(200);
+    uint8_t current_state =
+        rc522_card_present();
+
+    // card inserted
+    if (current_state &&
+        !previous_state)
+    {
+      uart_printf(
+          "CARD DETECTED\r\n");
+      gpio_toggle_pin(0, 0, 'A'); // red led off
+      gpio_toggle_pin(1, 1, 'A'); // green led on
+
+      delay_ms(150); // debounce
+    }
+
+    // card removed
+    if (!current_state &&
+        previous_state)
+    {
+      uart_printf(
+          "CARD REMOVED\r\n");
+      gpio_toggle_pin(0, 1, 'A'); // red led on
+      gpio_toggle_pin(1, 0, 'A'); // green led off
+      delay_ms(150);              // debounce
+    }
+
+    previous_state =
+        current_state;
+
+    delay_ms(5);
+  }
+}
+*/
+
+char get_mode(void)
+{
+  char mode;
+
+  uart_printf(
+      "\r\n==========\r\n");
+  uart_printf(
+      "1. READ MODE\r\n");
+  uart_printf(
+      "2. WRITE MODE\r\n");
+  uart_printf(
+      "Select Mode: ");
+
+  mode = usart1_receive_char();
+
+  uart_printf("%c\r\n", mode);
+
+  return mode;
+}
+
+void read_mode(void)
+{
+  uint8_t previous_state = 0;
+
+  uart_printf(
+      "\r\nREAD MODE\r\n");
+  uart_printf(
+      "Press q to quit\r\n");
+
+  while (1)
+  {
+    uint8_t current_state =
+        rc522_card_present();
+
+    // card inserted
+    if (current_state &&
+        !previous_state)
+    {
+      uart_printf(
+          "CARD DETECTED\r\n");
+
+      gpio_toggle_pin(0, 0, 'A');
+      gpio_toggle_pin(1, 1, 'A');
+
+      // read UID here later
+      // rc522_print_uid();
+
+      delay_ms(150);
+    }
+
+    // card removed
+    if (!current_state &&
+        previous_state)
+    {
+      uart_printf(
+          "CARD REMOVED\r\n");
+
+      gpio_toggle_pin(0, 1, 'A');
+      gpio_toggle_pin(1, 0, 'A');
+
+      delay_ms(150);
+    }
+
+    previous_state =
+        current_state;
+
+    // quit option
+    if (USART_SR & (1 << 5))
+    {
+      char c =
+          usart1_receive_char();
+
+      if (c == 'q')
+      {
+        uart_printf(
+            "Leaving read mode\r\n");
+        return;
+      }
+    }
+
+    delay_ms(5);
+  }
+}
+
+void write_mode(void)
+{
+  uart_printf(
+      "\r\nWRITE MODE\r\n");
+  uart_printf(
+      "Tap card...\r\n");
+
+  while (!rc522_card_present())
+  {
+    delay_ms(20);
+  }
+
+  uart_printf(
+      "CARD DETECTED\r\n");
+
+  gpio_toggle_pin(0, 0, 'A');
+  gpio_toggle_pin(1, 1, 'A');
+
+  // later:
+  // rc522_write_text("HELLO");
+
+  uart_printf(
+      "WRITE COMPLETE\r\n");
+
+  delay_ms(1000);
+
+  gpio_toggle_pin(0, 1, 'A');
+  gpio_toggle_pin(1, 0, 'A');
+}
+
+/*
+int main(void)
+{
+  usart1_init();
+  rc522_init();
+
+  uart_printf("START\r\n");
+
+  // LEDs
+  gpio_init(0, 'A',
+            GPIO_MODE_OUTPUT_PUSHPULL);
+
+  gpio_init(1, 'A',
+            GPIO_MODE_OUTPUT_PUSHPULL);
+
+  while (1)
+  {
+    char mode = get_mode();
+
+    if (mode == '1')
+    {
+      read_mode();
+    }
+    else if (mode == '2')
+    {
+      write_mode();
+    }
+    else
+    {
+      uart_printf(
+          "Invalid mode\r\n");
+    }
+  }
+}
+*/
+
+void uart_print_hex8(uint8_t value)
+{
+  if (value < 0x10)
+  {
+    uart_printf("0");
+  }
+
+  uart_printf("%x", value);
+}
+
+int main(void)
+{
+  usart1_init();
+  rc522_init();
+  uint8_t uid[4];
+
+  while (1)
+  {
+    if (rc522_card_present())
+    {
+      if (rc522_read_uid(uid))
+      {
+        uart_printf("UID: ");
+
+        uart_print_hex8(uid[0]);
+        uart_printf(" ");
+
+        uart_print_hex8(uid[1]);
+        uart_printf(" ");
+
+        uart_print_hex8(uid[2]);
+        uart_printf(" ");
+
+        uart_print_hex8(uid[3]);
+
+        uart_printf("\r\n");
+      }
+
+      delay_ms(5);
+    }
   }
 }

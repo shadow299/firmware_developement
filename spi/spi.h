@@ -27,6 +27,8 @@ BMP280 compatible
 #define SPI_CR1_BR_BITS 3 // bits 5:3 for baud rate control
 #define SPI1_CR1_SSM_BIT 9
 #define SPI1_CR1_SSI_BIT 8
+#define SPI1_CR1_CPOL_BIT 1
+#define SPI1_CR1_CPHA_BIT 0
 
 // bit definitions for SPI_SR
 #define SPI_SR_TXE_BIT 1
@@ -41,3 +43,8 @@ uint8_t spi_receive(void);
 // BMP280 specific functions
 uint8_t bmp280_read_register(uint8_t reg);
 void bmp280_write_register(uint8_t reg, uint8_t value);
+
+// RC522 specific functions
+void rc522_spi_init();
+uint8_t rc522_read_register(uint8_t reg);
+void rc522_write_register(uint8_t reg, uint8_t value);
